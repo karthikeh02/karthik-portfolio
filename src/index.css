@@ -1,0 +1,269 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: #060608;
+    --cyan: #22d3ee;
+    --violet: #8b5cf6;
+    --nav-h: 5rem;
+    color-scheme: dark;
+    scroll-padding-top: var(--nav-h);
+  }
+
+  * {
+    @apply border-white/[0.07];
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: auto; /* Lenis handles smooth scroll */
+  }
+
+  body {
+    @apply bg-ink text-fog-bright font-sans font-normal antialiased;
+    overflow-x: hidden;
+    font-feature-settings: "ss01", "cv01", "cv11";
+  }
+
+  ::selection {
+    background: rgba(34, 211, 238, 0.25);
+    color: #ffffff;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 9px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #060608;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #1b3a40, #2a2545);
+    border-radius: 999px;
+    border: 2px solid #060608;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #22d3ee, #8b5cf6);
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display;
+    text-wrap: balance;
+  }
+
+  /* Generic keyboard focus ring (pills/cards opt into .focus-ring for a
+     radius-following ring instead). */
+  :focus-visible {
+    outline: 2px solid rgba(34, 211, 238, 0.85);
+    outline-offset: 3px;
+  }
+
+  /* Skip link — first focusable element, hidden until focused. */
+  .skip-link {
+    @apply sr-only;
+  }
+  .skip-link:focus {
+    @apply not-sr-only fixed left-4 top-4 z-[200] rounded-full bg-cyan px-5 py-2 font-mono text-xs uppercase tracking-[0.2em] text-ink;
+  }
+}
+
+@layer components {
+  .container-px {
+    @apply mx-auto w-full max-w-container px-6 sm:px-8 lg:px-12;
+  }
+
+  /* Consistent vertical rhythm — one scale, applied everywhere. */
+  .section-y {
+    @apply py-24 sm:py-32 lg:py-40;
+  }
+  .section-y-tight {
+    @apply py-20 sm:py-28;
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(110deg, #ffffff 0%, #b9f5ff 38%, #c4b5fd 70%, #ffffff 100%);
+    background-size: 200% auto;
+  }
+  .text-gradient-neon {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(110deg, #22d3ee, #a78bfa, #f472b6, #22d3ee);
+    background-size: 250% auto;
+    animation: gradient-pan 8s ease infinite;
+  }
+
+  /* Glass surfaces — lifted off the dark void with a top light edge + shadow. */
+  /* Solid translucent fill — NO per-frame backdrop-filter blur (it re-composited
+     the scrolling backdrop behind every card on every Lenis frame: the single
+     biggest desktop scroll cost). Against the near-black ground this reads the
+     same as frosted glass; the inset top-light edge + shadow keep the lift. */
+  .glass {
+    background: rgba(18, 20, 30, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.07),
+      0 24px 60px -34px rgba(0, 0, 0, 0.9);
+  }
+  .glass-strong {
+    background: rgba(13, 15, 22, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.07),
+      0 30px 70px -36px rgba(0, 0, 0, 0.95);
+  }
+
+  /* Hairline that glows on hover (cyan + violet variants). */
+  .ring-hover {
+    transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+  }
+  .ring-hover:hover {
+    border-color: rgba(34, 211, 238, 0.35);
+    box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.15),
+      0 26px 60px -28px rgba(34, 211, 238, 0.4);
+  }
+  .ring-hover-violet {
+    transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
+  }
+  .ring-hover-violet:hover {
+    border-color: rgba(139, 92, 246, 0.4);
+    box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.18),
+      0 26px 60px -28px rgba(139, 92, 246, 0.42);
+  }
+
+  /* Buttons — one canonical system (size, radius, motion, press feedback). */
+  .btn-base {
+    @apply inline-flex items-center justify-center gap-2.5 rounded-full font-medium;
+    transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease,
+      background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  }
+  .btn-base:active {
+    transform: scale(0.97);
+  }
+  .btn-primary {
+    @apply btn-base bg-cyan px-7 py-3.5 text-ink shadow-glow;
+  }
+  .btn-primary:hover {
+    @apply shadow-glow-strong;
+  }
+  .btn-ghost {
+    @apply btn-base border border-white/15 px-7 py-3.5 text-fog-bright;
+  }
+  .btn-ghost:hover {
+    @apply border-cyan/40 text-cyan;
+  }
+  .btn-chip {
+    @apply btn-base border border-cyan/30 bg-cyan/5 px-5 py-2 font-mono text-xs uppercase tracking-[0.18em] text-cyan;
+  }
+  .btn-chip:hover {
+    @apply bg-cyan/15;
+  }
+
+  /* Radius-following focus ring for pills/cards. */
+  .focus-ring:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px rgba(34, 211, 238, 0.9);
+  }
+
+  .eyebrow {
+    @apply font-mono text-xs uppercase tracking-[0.26em] text-cyan;
+  }
+  /* Inline metadata labels — one consistent tracking everywhere. */
+  .label-meta {
+    @apply font-mono text-[0.7rem] uppercase tracking-[0.2em] text-fog-dim;
+  }
+
+  /* Animated underline link */
+  .link-underline {
+    position: relative;
+  }
+  .link-underline::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .link-underline:hover::after,
+  .link-underline[data-active="true"]::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+@layer utilities {
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+  .mask-fade-y-bottom {
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent);
+    mask-image: linear-gradient(to bottom, black 70%, transparent);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* Keyframes referenced directly from CSS (not via animate-* utilities). */
+@keyframes gradient-pan {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Grain overlay — viewport-sized + plain (normal) blend so it composites ONCE
+   as a static cached texture. (Was inset:-200% = 25x viewport with
+   mix-blend-mode:overlay, which forced a per-pixel readback+blend of the
+   constantly-animating Aurora/content backdrop every single frame.) */
+.grain::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* MOBILE PERF — coarse pointers only, so desktop renders identically.
+   Per-frame backdrop-filter and the fullscreen grain composite are the two
+   most expensive things on a phone during scroll. We drop the live blur and
+   the grain layer, then compensate with a slightly more opaque solid fill so
+   the glass panels still read as frosted glass (same borders + shadows). */
+@media (pointer: coarse) {
+  /* Glass is now filter-free site-wide, so no per-tier override is needed.
+     Just drop the grain layer on phones (one fewer fullscreen composite). */
+  .grain::before {
+    display: none;
+  }
+}
+
+/* Reduced motion: kill animations/transforms but KEEP tasteful color/opacity
+   transitions so hover affordances survive. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+  .grain::before {
+    display: none;
+  }
+}
