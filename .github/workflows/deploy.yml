@@ -1,12 +1,42 @@
 name: Deploy to Netlify
 
+# Auto-deploy: every push to main builds the site and ships it to production.
+# Also runnable on demand from the Actions tab (workflow_dispatch).
+# "on" is quoted so YAML never folds the bare key into the boolean `true`.
 "on":
   push:
     branches: [main]
   workflow_dispatch:
 
+# One deploy at a time; a newer push cancels an in-flight older one.
+concurrency:
+  group: netlify-deploy
+  cancel-in-progress: true
+
 jobs:
-  smoke:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "actions can start on this account"
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      # Block scalar (run: |) keeps the colon in the deploy message from being
+      # parsed as YAML — that exact issue broke the first two attempts.
+      - name: Deploy to Netlify (production)
+        run: |
+          npx --yes netlify-cli@latest deploy --prod --dir=dist --message "CI deploy ${{ github.sha }}"
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
