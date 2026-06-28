@@ -2,7 +2,9 @@ name: Deploy to Netlify
 
 # Auto-deploy: every push to main builds the site and ships it to production.
 # Also runnable on demand from the Actions tab (workflow_dispatch).
-on:
+# NOTE: "on" is quoted so YAML never normalizes the bare key to the boolean
+# `true` — otherwise GitHub can fail to register the triggers.
+"on":
   push:
     branches: [main]
   workflow_dispatch:
